@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<TaskLibrary>
+	<Task>
+		<TaskId type="xs:string">251fc861-b4e1-11e6-ba4f-84bf283094af</TaskId>
+		<TaskPriority type="xs:string">HighPriority</TaskPriority>
+		<TaskTitle type="xs:string">Get Job</TaskTitle>
+		<TaskDate type="xs:string">July</TaskDate>
+		<TaskBody type="xs:string">Apply Online for more information</TaskBody>
+		<TaskCreated type="xs:string">27/11/2016-14:36:16</TaskCreated>
+		<TaskLastUpdated type="xs:string">27/11/2016-14:36:16</TaskLastUpdated>
+	</Task>
+	<Task>
+		<TaskId type="xs:string">251fc861-b4e1-11e6-ba4f-84bf283094ad</TaskId>
+		<TaskPriority type="xs:string">LowPriority</TaskPriority>
+		<TaskTitle type="xs:string">Brew Coffee</TaskTitle>
+		<TaskDate type="xs:string">May</TaskDate>
+		<TaskBody type="xs:string">Go to Starbucks and mack on dat cafe latte</TaskBody>
+		<TaskCreated type="xs:string">27/11/2016-15:23:16</TaskCreated>
+		<TaskLastUpdated type="xs:string">27/11/2016-15:23:16</TaskLastUpdated>
+	</Task>
+</TaskLibrary>
