@@ -12,6 +12,7 @@
 # TODO: If necessary, develop multithreading capabilities, and service semaphore
 # TODO: Implement scripting front-end via powershell or python
 # TODO: Add Web frontend via angular, implement MVC model
+# TODO: Add Nano Python Package Deployment
 
 from __future__ import print_function
 from Configure import *
