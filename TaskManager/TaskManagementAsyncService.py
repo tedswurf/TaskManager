@@ -1,63 +1,79 @@
 '''
-
- Author: Alex Baker
- Date: 7th July 2008
- Description : Simple python program to generate wrap as a service based on example on the web, see link below.
- 
- http://essiene.blogspot.com/2005/04/python-windows-services.html
-
  Usage : python aservice.py install
  Usage : python aservice.py start
  Usage : python aservice.py stop
  Usage : python aservice.py remove
  
- C:\>python aservice.py  --username <username> --password <PASSWORD> --startup auto install
+ C:\>python TaskManagementAsyncService.py  --username <username> --password <PASSWORD> --startup auto install
+OR
+Running as Administrator:
+python TaskManagementAsyncService.py install
 
 '''
-
-import win32service
+from TaskManager import *
+from Task import *
+from Configure import *
 import win32serviceutil
-import win32api
-import win32con
+import win32service
 import win32event
-import win32evtlogutil
-import os
+import servicemanager
+import socket
 
-class TaskManagementAsyncService(win32serviceutil.ServiceFramework):
-   
-   _svc_name_ = "TaskManagementAsyncService"
-   _svc_display_name_ = "TaskManagementAsyncService - Currently Does Nothing"
-   _svc_description_ = "Tests Python service framework by receiving and echoing messages over a named pipe"
-         
-   def __init__(self, args):
-           win32serviceutil.ServiceFramework.__init__(self, args)
-           self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)           
 
-   def SvcStop(self):
-           self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-           win32event.SetEvent(self.hWaitStop)                    
-         
-   def SvcDoRun(self):
-      import servicemanager      
-      servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,servicemanager.PYS_SERVICE_STARTED,(self._svc_name_, '')) 
-      
-      self.timeout = 3000
+class TaskManagementAsyncService (win32serviceutil.ServiceFramework):
+    _svc_name_ = "TaskManagementOrchestrator"
+    _svc_display_name_ = "Task Manager Service"
 
-      while 1:
-         # Wait for service stop signal, if I timeout, loop again
-         rc = win32event.WaitForSingleObject(self.hWaitStop, self.timeout)
-         # Check to see if self.hWaitStop happened
-         if rc == win32event.WAIT_OBJECT_0:
-            # Stop signal encountered
-            servicemanager.LogInfoMsg("TaskManagementAsyncService - STOPPED")
-            break
-         else:
-            servicemanager.LogInfoMsg("TaskManagementAsyncService - is alive and well")   
-               
-      
-def ctrlHandler(ctrlType):
-   return True
-                  
-if __name__ == '__main__':   
-   win32api.SetConsoleCtrlHandler(ctrlHandler, True)   
-   win32serviceutil.HandleCommandLine(TaskManagementAsyncService)
+    def __init__(self,args):
+        win32serviceutil.ServiceFramework.__init__(self,args)
+        self.hWaitStop = win32event.CreateEvent(None,0,0,None)
+        socket.setdefaulttimeout(60)
+
+    def SvcStop(self):
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        win32event.SetEvent(self.hWaitStop)
+
+    def SvcDoRun(self):
+        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                              servicemanager.PYS_SERVICE_STARTED,
+                              (self._svc_name_,''))
+        #self.timeout = 640000    #640 seconds / 10 minutes (value is in milliseconds)
+        self.timeout = 120000     #120 seconds / 2 minutes
+        # This is how long the service will wait to run / refresh itself (see script below)
+        print(VERSION_NUMBER_DATE)
+        configuration = Configure()
+        configuration.ReadTMConfiguration(TM_CONFIGURATION_FILE_NAME)
+
+        taskManager = TaskManager()
+        taskManager.PopulateTaskLibrary()
+
+        here = os.path.dirname(os.path.realpath(__file__))
+        subdir = "Tasks"
+        filename = "TaskTestTarget.Task.xml"
+        targetXmlFileName = os.path.join(here, subdir, filename)
+
+        while 1:
+            # Wait for service stop signal, if I timeout, loop again
+            rc = win32event.WaitForSingleObject(self.hWaitStop, self.timeout)
+            # Check to see if self.hWaitStop happened
+            if rc == win32event.WAIT_OBJECT_0:
+                # Stop signal encountered
+                servicemanager.LogInfoMsg("Stop Signal Encountered - STOPPED!")  #For Event Log
+                break
+            else:
+
+                    #Ok, here's the real money shot right here.
+                    #[actual service code between rests]
+                    try:
+                        print("running")
+                    except:
+                        pass
+                    #[actual service code between rests]
+
+        #self.main()
+
+    def main(self):
+        pass
+
+if __name__ == '__main__':
+    win32serviceutil.HandleCommandLine(TaskManagementAsyncService)

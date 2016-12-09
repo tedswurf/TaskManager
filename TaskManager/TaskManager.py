@@ -39,7 +39,7 @@ class TaskManager:
 		global taskLibrary
 		taskLibrary = TaskLibrary()
 		
-
+'''
 # MAIN	
 def main():
 		print(VERSION_NUMBER_DATE)
@@ -72,7 +72,8 @@ def main():
 		# ALWAYS SYNC LIBRARY AS TASK MANAGER STARTS AND BEFORE IT ENDS
 		#taskLibrary.SyncTaskLibrary(targetXmlFileName)
 		#taskLibrary.PrintTaskLibrary()
-		
+	
 
 if __name__ == "__main__":
 	main()
+'''
