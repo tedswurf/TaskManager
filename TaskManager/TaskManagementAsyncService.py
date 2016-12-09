@@ -9,6 +9,17 @@ OR
 Running as Administrator:
 python TaskManagementAsyncService.py install
 
+# TODO: 	
+Basic constituent code blocks needed
+
+The following are the required basic code blocks of your client application
+
+Session request section: request a session with the provider
+Session authentication section: provide credentials to the provider
+Client section: create the Client
+Security Header section: add the WS-Security Header to the Client
+Consumption section: consume available operations (or methods) as needed
+
 '''
 from TaskManager import *
 from Task import *
@@ -61,14 +72,13 @@ class TaskManagementAsyncService (win32serviceutil.ServiceFramework):
                 servicemanager.LogInfoMsg("Stop Signal Encountered - STOPPED!")  #For Event Log
                 break
             else:
-
-                    #Ok, here's the real money shot right here.
-                    #[actual service code between rests]
-                    try:
-                        print("running")
-                    except:
-                        pass
-                    #[actual service code between rests]
+                #[actual service code between rests]
+                try:
+                    # Need to activate Listener for a request
+                    print("running")
+                except:
+                    pass
+                #[actual service code between rests]
 
         #self.main()
 
